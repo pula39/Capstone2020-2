@@ -1,0 +1,8 @@
+certifi==2020.6.20
+click==7.1.2
+Flask==1.1.2
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe @ file:///D:/bld/markupsafe_1600368487166/work
+Werkzeug==1.0.1
+wincertstore==0.2
