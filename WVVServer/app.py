@@ -14,3 +14,5 @@ def show_post(post_id):
 def tegami():
     print("letter has come!")
     return True
+
+app.run(debug=True)
