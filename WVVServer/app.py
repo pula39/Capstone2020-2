@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import request
 import os
 
 app = Flask(__name__)
@@ -14,8 +15,8 @@ def show_post(post_id):
 
 @app.route('/post_letter', methods=['POST'])
 def tegami():
-    print("letter has come!")
-    return True
+    print("letter has come!", request.values)
+    return str(request.values)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
