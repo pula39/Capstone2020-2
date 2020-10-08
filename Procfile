@@ -1,1 +1,1 @@
-web: python WVVServer/app.py
+web: cd WVVServer && python manage.py db upgrade && python app.py
