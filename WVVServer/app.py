@@ -13,8 +13,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import CustomEnv
-from models import Letter
+import models
 
 @app.route('/')
 def hello_world():
