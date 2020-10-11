@@ -29,12 +29,12 @@ class Letter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String())
     dialog = db.Column(db.String())
-    file_path = db.Column(db.String())
+    dialog_data = db.Column(db.LargeBinary())
 
-    def __init__(self, username, dialog, file_path):
+    def __init__(self, username, dialog, dialog_data):
         self.username = username
         self.dialog = dialog
-        self.file_path = file_path
+        self.dialog_data = dialog_data
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
