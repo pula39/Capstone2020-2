@@ -14,20 +14,52 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 import models
+import dbfunc
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+@app.route('/letter/all')
+def get_letters():
+    # 추가구현 필요.
+    return dbfunc.get_letters()
 
-@app.route('/post/<int:post_id>')
-def show_post(post_id):
-    # show the post with the given id, the id is an integer
-    return 'Post %d' % post_id
+@app.route('/letter/<int:letter_id>')
+def get_letter(letter_id):
+    # 추가구현 필요.
+    return dbfunc.get_letter_by_id(letter_id)
 
-@app.route('/post_letter', methods=['POST'])
-def tegami():
-    print("letter has come!", request.values)
-    return str(request.values)
+@app.route('/letter/add', methods=['POST'])
+def post_letter():
+    import clova
+    username = request.values['username']
+    dialog = request.values['dialog']
+    voice_type = request.values['voice_type']
+    option = {}
+    if 'option' in request.values:
+        option = request.values['option']
+
+    success, dialog_data = clova.get_voice(voice_type, dialog, option)# 추후 채워야함.
+    if success:
+        dbfunc.add_letter(username, dialog, dialog_data)
+        return {"success" : True}
+    else:
+        return {"success" : False, 'reason': dialog_data}
+
+@app.route('/env/all')
+def get_envs():
+    # 추가구현 필요.
+    return dbfunc.get_envs()
+
+@app.route('/env/<int:letter_id>')
+def get_env(env_id):
+    # 추가구현 필요.
+    return dbfunc.get_env_by_id(env_id)
+
+@app.route('/env/add', methods=['POST'])
+def post_letter():
+    username = request.values['username']
+    desc = request.values['desc']
+    tag = request.values['tag']
+    dbfunc.add_env(username, desc, tag)
+    return {"success" : True}
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
