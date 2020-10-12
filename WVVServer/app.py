@@ -11,12 +11,13 @@ load_dotenv(verbose=True)
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db = SQLAlchemy()
+db.init_app(app)
 
-import models
 import dbfunc
+import models
 
-@app.route('/letter/all')
+@app.route('/letter/all', methods=['GET'])
 def get_letters():
     # 추가구현 필요.
     return dbfunc.get_letters()
@@ -43,18 +44,18 @@ def post_letter():
     else:
         return {"success" : False, 'reason': dialog_data}
 
-@app.route('/env/all')
+@app.route('/env/all', methods=['GET'])
 def get_envs():
     # 추가구현 필요.
     return dbfunc.get_envs()
 
-@app.route('/env/<int:letter_id>')
+@app.route('/env/<int:env_id>', methods=['GET'])
 def get_env(env_id):
     # 추가구현 필요.
     return dbfunc.get_env_by_id(env_id)
 
 @app.route('/env/add', methods=['POST'])
-def post_letter():
+def post_env():
     username = request.values['username']
     desc = request.values['desc']
     tag = request.values['tag']
