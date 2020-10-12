@@ -6,7 +6,8 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv(verbose=True)
+
+load_dotenv(verbose=True, override=True)
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
