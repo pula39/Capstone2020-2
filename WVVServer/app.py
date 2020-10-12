@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask import send_file
 from flask import request
 
 import os
-
+import io
 from dotenv import load_dotenv
 
 
@@ -23,10 +24,26 @@ def get_letters():
     # 추가구현 필요.
     return dbfunc.get_letters()
 
-@app.route('/letter/<int:letter_id>')
+@app.route('/letter/random', methods=['GET'])
+def get_random_letter():
+    # 추가구현 필요.
+    letter = dbfunc.get_random_letter()
+    return {'id': letter.id,'dialog': letter.dialog, 'username': letter.username}
+
+@app.route('/letter/<int:letter_id>', methods=['GET'])
 def get_letter(letter_id):
     # 추가구현 필요.
-    return dbfunc.get_letter_by_id(letter_id)
+    letter = dbfunc.get_letter_by_id(letter_id)
+    return {'dialog': letter.dialog, 'dialog_data_link': letter.dialog_data}
+
+@app.route('/letter/voice/<int:letter_id>', methods=['GET'])
+def get_letter_voice(letter_id):
+    # 추가구현 필요.
+    letter = dbfunc.get_letter_by_id(letter_id)
+    return send_file(
+        io.BytesIO(letter.dialog_data),
+        mimetype='audio/x-wav',
+        attachment_filename=f'{letter.dialog}.mp3')
 
 @app.route('/letter/add', methods=['POST'])
 def post_letter():
@@ -38,12 +55,12 @@ def post_letter():
     if 'option' in request.values:
         option = request.values['option']
 
-    success, dialog_data = clova.get_voice(voice_type, dialog, option)# 추후 채워야함.
+    success, dialog_data = clova.get_voice(voice_type, dialog, option)
     if success:
-        dbfunc.add_letter(username, dialog, dialog_data)
-        return {"success" : True}
+        letter = dbfunc.add_letter(username, dialog, dialog_data)
+        return str(letter.id)
     else:
-        return {"success" : False, 'reason': dialog_data}
+        return str(-1)
 
 @app.route('/env/all', methods=['GET'])
 def get_envs():
