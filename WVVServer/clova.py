@@ -35,13 +35,13 @@ def get_voice(voice_type, text, options = {}):
     headers = {'X-NCP-APIGW-API-KEY-ID': client_id,
                'X-NCP-APIGW-API-KEY': client_secret,
                "Content-Type": "application/x-www-form-urlencoded"}
-    datas = {'speaker':voice_type, 'text': text}
+    datas = {'speaker':voice_type, 'text': text, 'format':'wav'}
     datas.update(options)
     r = requests.post(url, data=datas, headers=headers)
     if r.status_code != '200':
         return False, r.content
 
-    with open(f'{voice_type}_{text[:50]}.mp3', 'wb') as f:
+    with open(f'{voice_type}_{text[:50]}.wav', 'wb') as f:
         f.write(r.content)
 
     return True, r.content
