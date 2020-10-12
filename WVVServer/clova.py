@@ -38,7 +38,10 @@ def get_voice(voice_type, text, options = {}):
     datas = {'speaker':voice_type, 'text': text, 'format':'wav'}
     datas.update(options)
     r = requests.post(url, data=datas, headers=headers)
-    if r.status_code != '200':
+    if r.status_code != 200:
+        print(os.getcwd())
+        with open(f'error.txt', 'wb') as f:
+            f.write(r.content)
         return False, r.content
 
     with open(f'{voice_type}_{text[:50]}.wav', 'wb') as f:
