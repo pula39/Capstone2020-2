@@ -44,8 +44,8 @@ def get_voice(voice_type, text, options = {}):
             f.write(r.content)
         return False, r.content
 
-    with open(f'{voice_type}_{text[:50]}.wav', 'wb') as f:
-        f.write(r.content)
+    # with open(f'{voice_type}_{text[:50]}.wav', 'wb') as f:
+    #     f.write(r.content)
 
     return True, r.content
 

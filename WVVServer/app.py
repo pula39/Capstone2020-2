@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask import send_file
 from flask import request
+from flask_migrate import Migrate
 
 import os
 import io
@@ -13,11 +14,14 @@ load_dotenv(verbose=True, override=True)
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"expire_on_commit": False})
 db.init_app(app)
 
 import dbfunc
 import models
+# 쿨하게 킬때마다  Migrate
+print("MIGRATED!")
+migrate = Migrate(app, db)
 
 @app.route('/letter/all', methods=['GET'])
 def get_letters():
@@ -38,7 +42,6 @@ def get_letter(letter_id):
 
 @app.route('/letter/voice/<int:letter_id>', methods=['GET'])
 def get_letter_voice(letter_id):
-    # 추가구현 필요.
     letter = dbfunc.get_letter_by_id(letter_id)
     return send_file(
         io.BytesIO(letter.dialog_data),
@@ -81,5 +84,6 @@ def post_env():
     return {"success" : True}
 
 if __name__ == '__main__':
+    print("RUN")
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
