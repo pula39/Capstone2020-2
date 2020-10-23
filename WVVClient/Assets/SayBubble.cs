@@ -57,13 +57,12 @@ public class SayBubble : MonoBehaviour
         if (audioSource.clip != null)
         {
             hideTime = Mathf.Max(hideTime, audioSource.clip.length + 1.0f);
+            audioSource.Play();
         }
 
-        //한번 재생되면 사라짐
-        audioSource.PlayOneShot(audioSource.clip);
-        audioSource.clip = null;
-
         yield return new WaitForSeconds(hideTime);
+
+        audioSource.clip = null;
 
         HideBubble();;
     }

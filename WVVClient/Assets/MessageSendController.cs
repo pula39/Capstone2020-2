@@ -23,7 +23,7 @@ public class MessageSendController : MonoBehaviour
 
         if (msgInput.text.Length == 0)
         {
-            Debug.LogError("메시지라도 입력해야지");
+            AlertManager.Instance.ShowAlertMsg("메시지를 입력해주세요");
             return;
         }
 
