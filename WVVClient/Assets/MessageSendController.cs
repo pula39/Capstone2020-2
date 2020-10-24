@@ -10,6 +10,7 @@ public class MessageSendController : MonoBehaviour
     public TMP_InputField nameInput;
     public TMP_InputField msgInput;
     public SayBubble charSayBubble;
+    public CharacterController characterController;
     public string voiceType = "mijin";
 
     [Serializable]
@@ -26,6 +27,9 @@ public class MessageSendController : MonoBehaviour
         charSayBubble.HideBubble();
 
         nameInput.text = PlayerPrefs.GetString("Player Name", "");
+
+        charSayBubble.onDisplayBubble.AddListener(() => { characterController.eyeOpening = 0.0f; });
+        charSayBubble.onHideBubble.AddListener(() => { characterController.eyeOpening = 1.0f; });
     }
 
     public void SetVoiceType()

@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class SayBubble : MonoBehaviour
@@ -13,6 +15,9 @@ public class SayBubble : MonoBehaviour
 
     public AudioSource audioSource; 
     public float hideTime = 5.0f;
+
+    public UnityEvent onDisplayBubble = new UnityEvent(); 
+    public UnityEvent onHideBubble = new UnityEvent();
 
     public void HideBubble()
     {
@@ -60,7 +65,9 @@ public class SayBubble : MonoBehaviour
             audioSource.Play();
         }
 
+        onDisplayBubble.Invoke();
         yield return new WaitForSeconds(hideTime);
+        onHideBubble.Invoke();
 
         audioSource.clip = null;
 

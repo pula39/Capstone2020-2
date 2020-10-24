@@ -26,23 +26,28 @@ public class HttpRequestTester : MonoBehaviour
         }
     }
 
-    private string _baseUrl = "https://wvv-server.herokuapp.com/";
-    private string baseUrl
-    {
-        get
-        {
-            if (PlayerPrefs.GetString("Custom Server", "") == "")
-            {
-                return _baseUrl;
-            }
+    private string baseUrl = "https://wvv-server.herokuapp.com/";
 
-            return PlayerPrefs.GetString("Custom Server");
-        }
+    public void SetLocalhost()
+    {
+         baseUrl = "http://localhost:5000/";
     }
-    //private string baseUrl = "http://localhost:5000/";
+
+    public void SetRemoteHost()
+    {
+         baseUrl = "https://wvv-server.herokuapp.com/";
+    }
+
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("DebugMenu/TestHttpRequest")]
 #endif
+
+    public void Awake()
+    {
+#if UNITY_EDITOR
+        SetLocalhost();
+#endif
+    }
 
     public IEnumerator Upload(string url, WWWForm form, Action<string> action)
     {
