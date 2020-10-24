@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 
 public class HttpRequestTester : MonoBehaviour
 {
-    public static int timeout = 5;
+    public static int timeout = 10;
     private static HttpRequestTester instance;
     public static HttpRequestTester Instance
     {
@@ -26,14 +26,23 @@ public class HttpRequestTester : MonoBehaviour
         }
     }
 
-    //private string baseUrl = "https://wvv-server.herokuapp.com/";
-    private string baseUrl = "http://localhost:5000/";
+    private string _baseUrl = "https://wvv-server.herokuapp.com/";
+    private string baseUrl
+    {
+        get
+        {
+            if (PlayerPrefs.GetString("Custom Server", "") == "")
+            {
+                return _baseUrl;
+            }
+
+            return PlayerPrefs.GetString("Custom Server");
+        }
+    }
+    //private string baseUrl = "http://localhost:5000/";
 #if UNITY_EDITOR
     [UnityEditor.MenuItem("DebugMenu/TestHttpRequest")]
 #endif
-    public static void Run()
-    {
-    }
 
     public IEnumerator Upload(string url, WWWForm form, Action<string> action)
     {
@@ -103,9 +112,8 @@ public class HttpRequestTester : MonoBehaviour
         }
     }
 
-    public IEnumerator PostLetter(string username, string dialog, Action<int> action)
+    public IEnumerator PostLetter(string username, string dialog, string voiceType, Action<int> action)
     {
-        string voiceType = "mijin";
         string url = baseUrl + $"letter/add";
 
         WWWForm form = new WWWForm();
