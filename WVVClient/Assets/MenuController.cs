@@ -11,16 +11,25 @@ public class MenuController : MonoBehaviour
     [SerializeField]
     public List<GameObject> menuObjects;
 
-    public GameObject MenuRoot;
+    public GameObject menuRoot;
+
+    public GameObject menuBackGround;
 
     public void Awake()
     {
         menuObjects = new List<GameObject>();
-        foreach (Transform t in MenuRoot.transform)
+        foreach (Transform t in menuRoot.transform)
         {
+            if (t.gameObject == menuBackGround)
+            {
+                continue;
+            }
+
             menuObjects.Add(t.gameObject);
             t.gameObject.SetActive(false);
         }
+
+        menuBackGround.SetActive(false);
     }
 
     public void ActiveMenu(GameObject menuGb)
@@ -29,5 +38,17 @@ public class MenuController : MonoBehaviour
         {
             gb.SetActive(gb == menuGb);
         }
+
+        menuBackGround.SetActive(true);
+    }
+
+    public void HideUI()
+    {
+        foreach (GameObject gb in menuObjects)
+        {
+            gb.SetActive(false);
+        }
+
+        menuBackGround.SetActive(false);
     }
 }
