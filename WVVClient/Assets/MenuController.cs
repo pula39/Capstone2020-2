@@ -15,6 +15,8 @@ public class MenuController : MonoBehaviour
 
     public GameObject menuBackGround;
 
+    public GameObject menuBar;
+
     public void Awake()
     {
         menuObjects = new List<GameObject>();
@@ -42,13 +44,16 @@ public class MenuController : MonoBehaviour
         menuBackGround.SetActive(true);
     }
 
-    public void HideUI()
+    public void ToggleUI()
     {
+        var currentlyActive = menuBar.gameObject.activeSelf;
         foreach (GameObject gb in menuObjects)
         {
             gb.SetActive(false);
         }
 
         menuBackGround.SetActive(false);
+
+        menuBar.SetActive(!currentlyActive);
     }
 }

@@ -3,26 +3,75 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class CustomEnv 
-{
-    public string envName;
-    public AudioReverbPreset reverbZonePreset;
-    public string bgdFileName;
-}
 public class EnvController : MonoBehaviour
 {
-    public CustomEnv customEnv;
+    [Serializable]
+    public class EnvDataToMenu
+    {
+        public EnvDataContainer data;
+        public EnvMenuDisplay display;
+    }
 
-    public Sprite background; 
-    public AudioReverbZone reverbZone; 
+    public SpriteRenderer background; 
+    public AudioReverbZone reverbZone;
+
+    public GameObject extraRoot;
+
+    public List<EnvDataToMenu> envDataToMenu;
+
+    public SoundSlider[] soundSliderForExtra;
+    public List<GameObject> extraList;
 
     void Awake()
     {
         var jsonStr = "{}";
-        JsonUtility.FromJsonOverwrite(jsonStr, customEnv);
 
-        reverbZone.reverbPreset = customEnv.reverbZonePreset;
-        // 사진 추가는 나중에
+        SetEnvData(envDataToMenu[0].data);
+
+        SetEnvDataDisplay();
+    }
+
+    public void SetEnvData(EnvDataContainer data)
+    {
+        background.sprite = data.envBgdSprite;
+        reverbZone.reverbPreset = data.reverbPreset;
+
+        foreach (Transform t in extraRoot.transform)
+        {
+            Destroy(t.gameObject);
+        }
+
+        extraList.Clear();
+        foreach (var dataExtraInfo in data.extraInfos)
+        {
+            var gb = Instantiate(dataExtraInfo.prefab, extraRoot.transform);
+            gb.transform.position = dataExtraInfo.pos;
+            extraList.Add(gb);
+
+        }
+
+        //하드코딩
+        for (int i = 0; i < soundSliderForExtra.Length; i++)
+        {
+            if (i >= extraList.Count)
+            {
+                break;
+            }
+
+            soundSliderForExtra[i].audioSource = extraList[i].GetComponentInChildren<AudioSource>();
+        }
+    }
+
+    public void SetEnvDataDisplay()
+    {
+        foreach (var dataToMenu in envDataToMenu)
+        {
+            dataToMenu.display.ShowEnvData(dataToMenu.data);
+            dataToMenu.display.AddButtonClickEvent(() =>
+            {
+                SetEnvData(dataToMenu.data);
+            });
+        }
+
     }
 }
