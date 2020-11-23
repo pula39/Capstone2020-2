@@ -13,6 +13,8 @@ public class EnvDataContainer : MonoBehaviour
         public GameObject prefab;
     }
 
+    public Sprite envLetterInputSprite;
+
     public Sprite envBgdSprite;
     public string envName;
     public string envDesc;

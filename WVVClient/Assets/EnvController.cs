@@ -13,6 +13,9 @@ public class EnvController : MonoBehaviour
     }
 
     public SpriteRenderer background; 
+    public SpriteRenderer letterSpriteRenderer;
+    private Sprite defaultLetterSpriteRenderer;
+
     public AudioReverbZone reverbZone;
 
     public GameObject extraRoot;
@@ -29,6 +32,8 @@ public class EnvController : MonoBehaviour
         SetEnvData(envDataToMenu[0].data);
 
         SetEnvDataDisplay();
+
+        defaultLetterSpriteRenderer = letterSpriteRenderer?.sprite;
     }
 
     public void SetEnvData(EnvDataContainer data)
@@ -59,6 +64,11 @@ public class EnvController : MonoBehaviour
             }
 
             soundSliderForExtra[i].audioSource = extraList[i].GetComponentInChildren<AudioSource>();
+        }
+
+        if (data.envLetterInputSprite != null)
+        {
+            letterSpriteRenderer.sprite = data.envLetterInputSprite;
         }
     }
 
