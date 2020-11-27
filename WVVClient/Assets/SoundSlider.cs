@@ -16,7 +16,6 @@ public class SoundSlider : MonoBehaviour
         mainSlider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
     }
 
-    // Invoked when the value of the slider changes.
     public void ValueChangeCheck()
     {
         audioSource.volume = mainSlider.value;

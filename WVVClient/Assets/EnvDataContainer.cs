@@ -22,4 +22,8 @@ public class EnvDataContainer : MonoBehaviour
     public AudioReverbPreset reverbPreset;
 
     public List<ExtraInfo> extraInfos;
+
+    public List<AudioClip> bgmList;
+
+    public List<AudioClip> soundSfxList;
 }

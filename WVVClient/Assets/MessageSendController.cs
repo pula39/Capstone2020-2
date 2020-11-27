@@ -49,12 +49,12 @@ public class MessageSendController : MonoBehaviour
 
         if (nameInput.text.Length == 0)
         {
-            nameInput.SetTextWithoutNotify("ㅇㅇ");
+            AlertManager.Instance.ShowAlertMsg("이름을 입력해주세요.");
         }
 
         if (msgInput.text.Length == 0)
         {
-            AlertManager.Instance.ShowAlertMsg("메시지를 입력해주세요");
+            AlertManager.Instance.ShowAlertMsg("메시지를 입력해주세요.");
             return;
         }
 

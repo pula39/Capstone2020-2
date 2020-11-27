@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnvController : MonoBehaviour
 {
@@ -23,7 +24,19 @@ public class EnvController : MonoBehaviour
     public List<EnvDataToMenu> envDataToMenu;
 
     public SoundSlider[] soundSliderForExtra;
-    public List<GameObject> extraList;
+    public ExtraSaybubbleIntervalSlider[] extraSaybubbleIntervalSlider;
+
+
+    public List<ExtraCharacter> extraList;
+
+    public EnvDataContainer currentEnvDataContainer;
+
+    public AudioSource BgmAudioSource;
+
+    public GameObject characterModel;
+
+    public float randomSFXPlayMin = 15;
+    public float randomSFXPlayMax = 45;
 
     void Awake()
     {
@@ -38,6 +51,8 @@ public class EnvController : MonoBehaviour
 
     public void SetEnvData(EnvDataContainer data)
     {
+        currentEnvDataContainer = data;
+
         background.sprite = data.envBgdSprite;
         reverbZone.reverbPreset = data.reverbPreset;
 
@@ -51,11 +66,11 @@ public class EnvController : MonoBehaviour
         {
             var gb = Instantiate(dataExtraInfo.prefab, extraRoot.transform);
             gb.transform.position = dataExtraInfo.pos;
-            extraList.Add(gb);
+            extraList.Add(gb.GetComponent<ExtraCharacter>());
 
         }
 
-        //하드코딩
+        // 사운드 지정을 위한 하드코딩
         for (int i = 0; i < soundSliderForExtra.Length; i++)
         {
             if (i >= extraList.Count)
@@ -64,12 +79,21 @@ public class EnvController : MonoBehaviour
             }
 
             soundSliderForExtra[i].audioSource = extraList[i].GetComponentInChildren<AudioSource>();
+            extraSaybubbleIntervalSlider[i].extra = extraList[i];
+            if (extraSaybubbleIntervalSlider[i].mainSlider)
+            {
+                extraList[i].randomSayInteval = extraSaybubbleIntervalSlider[i].mainSlider.value;
+            }
         }
 
         if (data.envLetterInputSprite != null)
         {
             letterSpriteRenderer.sprite = data.envLetterInputSprite;
         }
+
+        StopAllCoroutines();
+        StartCoroutine(PlayEnvBgmLoop());
+        StartCoroutine(PlayEnvSFXLoop());
     }
 
     public void SetEnvDataDisplay()
@@ -82,6 +106,57 @@ public class EnvController : MonoBehaviour
                 SetEnvData(dataToMenu.data);
             });
         }
+    }
 
+    public IEnumerator PlayEnvBgmLoop()
+    {
+        float interval = 10.0f;
+
+        foreach (var audioClip in currentEnvDataContainer.bgmList)
+        {
+            BgmAudioSource.clip = audioClip;
+            BgmAudioSource.loop = false;
+            BgmAudioSource.Play();
+
+            yield return new WaitForSeconds(audioClip.length + interval);
+        }
+
+        yield return new WaitForSeconds(interval);
+
+        StartCoroutine(PlayEnvBgmLoop());
+    }
+
+    public IEnumerator PlayEnvSFXLoop()
+    {
+        yield return new WaitForSeconds(Random.Range(randomSFXPlayMin, randomSFXPlayMax));
+
+        while (true)
+        {
+            var selectedClipIndex = Random.Range(0, currentEnvDataContainer.soundSfxList.Count);
+            var selectedClip = currentEnvDataContainer.soundSfxList[selectedClipIndex];
+
+            var interval = Math.Max(Random.Range(randomSFXPlayMin, randomSFXPlayMax), selectedClip.length);
+
+            if (extraList.Count != 0)
+            {
+                var extra = extraList[Random.Range(0, extraList.Count)];
+                if (selectedClip == null)
+                {
+                    AlertManager.Instance.ShowAlertForSeconds($"EXTRA SFX 가 null입니다. {selectedClipIndex}", 0.5f);
+                }
+                else
+                {
+                    extra.SfxAudioSource.PlayOneShot(selectedClip);
+                    AlertManager.Instance.ShowAlertMsg($"EXTRA가 SFX를 재생하였습니다.{selectedClip.name}");
+                }
+            }
+
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    public void SetCharacterVisible(bool visible)
+    {
+        characterModel.SetActive(visible);
     }
 }

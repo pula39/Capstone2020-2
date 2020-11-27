@@ -10,6 +10,8 @@ public class ExtraCharacter : MonoBehaviour
 
     public AudioClip GeneralAudioClip;
 
+    public AudioSource SfxAudioSource;
+
     void Awake()
     {
         sayBubble.HideBubble();
@@ -19,6 +21,16 @@ public class ExtraCharacter : MonoBehaviour
     {
         StartCoroutine(DisplayBubble());
     }
+
+    public void ChangeRandomSayInterval(float interval)
+    {
+        StopAllCoroutines();
+        
+        sayBubble.HideBubble();
+        randomSayInteval = interval;
+
+        StartCoroutine(DisplayBubble());
+    } 
 
     public IEnumerator DisplayBubble()
     {
