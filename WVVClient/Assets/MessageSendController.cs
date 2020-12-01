@@ -50,6 +50,7 @@ public class MessageSendController : MonoBehaviour
         if (nameInput.text.Length == 0)
         {
             AlertManager.Instance.ShowAlertMsg("이름을 입력해주세요.");
+            return;
         }
 
         if (msgInput.text.Length == 0)

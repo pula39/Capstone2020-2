@@ -56,4 +56,13 @@ public class MenuController : MonoBehaviour
 
         menuBar.SetActive(!currentlyActive);
     }
+    public void ExitProgram()
+    {
+        Application.Quit();
+    }
+    public void DeleteSave()
+    {
+        PlayerPrefs.DeleteAll();
+        AlertManager.Instance.ShowAlertMsg("설정 데이터가 삭제되었습니다.");
+    }
 }
